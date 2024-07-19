@@ -2,32 +2,59 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_IMAGE = "battulaveerareddy/myimg"
-        TAG = "v1"
-        CONTAINER_NAME = "myimg-container"
+        DOCKER_REGISTRY = 'docker.io'
+        DOCKER_CREDENTIALS_ID = 'dockerHubCredentials'
     }
-    
+
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/battulaveerareddy/d-h-j.git'
+                git url:'https://github.com/battulaveerareddy/d-h-j.git'
             }
         }
-        
+
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker build -t battulaveerareddy/myimg .
+                    def tagName = "v1"
+                    def imageName = "battulaveerareddy/image:${tagName}"
+                    
+                    docker.build(imageName, "-f Dockerfile .")
                 }
             }
         }
-        
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    def tagName = "v1"
+                    def imageName = "battulaveerareddy/image:${tagName}"
+                    docker.withRegistry("https://index.docker.io/v1/", DOCKER_CREDENTIALS_ID) {
+                        docker.image(imageName).push()
+                    }
+                }
+            }
+        }
+
+
         stage('Run Docker Container') {
             steps {
                 script {
-                    docker run -d --name myimg-container -p 80:80 battulaveerareddy/myimg 
+                    def tagName = "v1"
+                    def containerName = "container-${tagName}"
+                    def imageName = "battulaveerareddy/image:${tagName}"
+                     bat "docker rm -f ${containerName} || true"
+                    bat "docker run -d -p 8051:80 --name ${containerName} ${imageName}"
                 }
             }
+        }
+
+       
+    }
+
+    post {
+        always {
+            cleanWs()
         }
     }
 }
