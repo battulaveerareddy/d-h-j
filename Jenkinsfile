@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         DOCKER_REGISTRY = 'docker.io'
-        DOCKER_CREDENTIALS_ID = 'dockerHubCredentials'
+        DOCKER_CREDENTIALS_ID = 'battulaveerareddy'
     }
 
     stages {
@@ -44,7 +44,7 @@ pipeline {
                     def containerName = "container-${tagName}"
                     def imageName = "battulaveerareddy/image:${tagName}"
                      bat "docker rm -f ${containerName} || true"
-                    bat "docker run -d -p 8051:80 --name ${containerName} ${imageName}"
+                    bat "docker run -d -p 8051:80 --name ${container} ${battulaveerareddy/image}"
                 }
             }
         }
