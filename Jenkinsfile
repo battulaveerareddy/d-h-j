@@ -2,8 +2,9 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_IMAGE = 'my-image'
-        CONTAINER_NAME = 'my-container'
+        DOCKER_IMAGE = "battulaveerareddy/myimg"
+        TAG = "v1"
+        CONTAINER_NAME = "myimg-container"
     }
     
     stages {
@@ -16,7 +17,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${my-image}:${env.BUILD_NUMBER}", "-f Dockerfile .")
+                    docker build -t battulaveerareddy/myimg
                 }
             }
         }
@@ -24,7 +25,7 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    docker.run("${my-image}:${env.BUILD_NUMBER}", "--name ${my-container} -d -p 80:80")
+                    docker run -d --name myimg-container -p 80:80 battulaveerareddy/myimg 
                 }
             }
         }
