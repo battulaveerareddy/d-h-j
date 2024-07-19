@@ -23,27 +23,14 @@ pipeline {
                 }
             }
         }
-
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    def tagName = "v1"
-                    def imageName = "battulaveerareddy/image:${tagName}"
-                    docker.withRegistry("https://index.docker.io/v1/", DOCKER_CREDENTIALS_ID) {
-                        docker.image(imageName).push()
-                    }
-                }
-            }
-        }
-
-
+        
         stage('Run Docker Container') {
             steps {
                 script {
                     def tagName = "v1"
                     def containerName = "container-${tagName}"
                     def imageName = "battulaveerareddy/image:${tagName}"
-                     bat "docker rm -f ${containerName} || true"
+                     bat "docker rm -f ${container} || true"
                     bat "docker run -d -p 8051:80 --name ${container} ${battulaveerareddy/image}"
                 }
             }
