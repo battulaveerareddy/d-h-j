@@ -25,11 +25,6 @@ pipeline {
             }
         }
         
-        stage('Test') {
-            steps {
-            }
-        }
-        
         stage('Push Docker Image') {
             steps {
                 script {
